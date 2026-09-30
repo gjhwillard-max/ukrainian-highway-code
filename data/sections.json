@@ -1,0 +1,19 @@
+{
+  "generated_at": null,
+  "translator": "pending",
+  "sections": [
+    {
+      "slug": "building-content",
+      "title": "Building the full Highway Code…",
+      "description": "The automated importer is preparing all official Highway Code sections and Ukrainian translations.",
+      "source_url": "https://www.gov.uk/guidance/the-highway-code",
+      "blocks": [
+        {
+          "english_html": "<p>The full bilingual content is being generated automatically from GOV.UK.</p>",
+          "ukrainian_html": "<p>Повний двомовний вміст автоматично створюється на основі GOV.UK.</p>",
+          "search_text": "building full content"
+        }
+      ]
+    }
+  ]
+}
