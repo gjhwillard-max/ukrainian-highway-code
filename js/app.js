@@ -1,76 +1,96 @@
-const selector=document.getElementById("languageMode");
+const sectionSelect=document.getElementById("sectionSelect");
+const languageMode=document.getElementById("languageMode");
 const search=document.getElementById("search");
-const rulesEl=document.getElementById("rules");
+const content=document.getElementById("content");
 const loading=document.getElementById("loading");
 const noResults=document.getElementById("noResults");
-let cards=[];
+const sectionHeader=document.getElementById("sectionHeader");
+const sectionTitle=document.getElementById("sectionTitle");
+const sectionDescription=document.getElementById("sectionDescription");
+const sectionCount=document.getElementById("sectionCount");
+const officialLink=document.getElementById("officialLink");
+const prevSection=document.getElementById("prevSection");
+const nextSection=document.getElementById("nextSection");
 
-function escapeHtml(value){
-  return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
+let dataset={sections:[]};
+let activeIndex=0;
+
+function normaliseText(html){
+  const tmp=document.createElement("div");
+  tmp.innerHTML=html||"";
+  return (tmp.textContent||"").toLowerCase();
 }
 
-function renderRules(rules){
-  rulesEl.innerHTML=rules.map(rule=>`
-    <article class="rule-card" data-search="${escapeHtml([
-      rule.rule,
-      rule.title||"",
-      rule.english||"",
-      rule.ukrainian||"",
-      ...(rule.keywords||[])
-    ].join(" ").toLowerCase())}">
-      <div class="rule-number">${escapeHtml(rule.rule)}</div>
-      ${rule.title?`<h2 class="rule-title">${escapeHtml(rule.title)}</h2>`:""}
-      <div class="english language-block">
-        <h3>🇬🇧 English</h3>
-        <p>${escapeHtml(rule.english)}</p>
-      </div>
-      <div class="ukrainian language-block">
-        <h3>🇺🇦 Українською</h3>
-        <p>${escapeHtml(rule.ukrainian)}</p>
-      </div>
-    </article>
-  `).join("");
-  cards=[...document.querySelectorAll(".rule-card")];
-  loading.hidden=true;
-  applyLanguage();
-  applySearch();
-}
+function renderSection(){
+  if(!dataset.sections.length) return;
+  const section=dataset.sections[activeIndex];
+  sectionSelect.value=String(activeIndex);
+  sectionCount.textContent=`Section ${activeIndex+1} of ${dataset.sections.length}`;
+  sectionTitle.textContent=section.title;
+  sectionDescription.textContent=section.description||"";
+  sectionDescription.hidden=!section.description;
+  officialLink.href=section.source_url;
+  sectionHeader.hidden=false;
+  prevSection.disabled=activeIndex===0;
+  nextSection.disabled=activeIndex===dataset.sections.length-1;
 
-function applyLanguage(){
-  const mode=selector.value;
-  document.querySelectorAll(".english").forEach(el=>el.hidden=mode==="ukrainian");
-  document.querySelectorAll(".ukrainian").forEach(el=>el.hidden=mode==="english");
+  const q=search.value.trim().toLowerCase();
+  const mode=languageMode.value;
+  let shown=0;
+
+  content.innerHTML=(section.blocks||[]).map((block,i)=>{
+    const searchText=(block.search_text||normaliseText(block.english_html)+" "+normaliseText(block.ukrainian_html)).toLowerCase();
+    if(q && !searchText.includes(q)) return "";
+    shown++;
+    const english=mode==="ukrainian"?"":`
+      <div class="english-wrap">
+        <p class="language-label">🇬🇧 English</p>
+        <div class="source-html">${block.english_html||""}</div>
+      </div>`;
+    const ukrainian=mode==="english"?"":`
+      <div class="ukrainian-wrap">
+        <p class="language-label">🇺🇦 Українською</p>
+        <div class="translation-html">${block.ukrainian_html||""}</div>
+      </div>`;
+    return `<article class="content-block" data-block="${i}">${english}${ukrainian}</article>`;
+  }).join("");
+
+  noResults.hidden=shown!==0;
+  window.scrollTo({top:0,behavior:"smooth"});
+  localStorage.setItem("sectionIndex",String(activeIndex));
   localStorage.setItem("languageMode",mode);
 }
 
-function applySearch(){
-  const q=search.value.trim().toLowerCase();
-  let visible=0;
-  cards.forEach(card=>{
-    const show=!q||(card.dataset.search||"").includes(q);
-    card.hidden=!show;
-    if(show) visible++;
-  });
-  noResults.hidden=visible!==0||cards.length===0;
+function populateSections(){
+  sectionSelect.innerHTML=dataset.sections.map((s,i)=>`<option value="${i}">${i+1}. ${s.title}</option>`).join("");
+  const saved=Number(localStorage.getItem("sectionIndex"));
+  if(Number.isInteger(saved)&&saved>=0&&saved<dataset.sections.length) activeIndex=saved;
+  renderSection();
 }
 
-async function loadRules(){
+async function loadData(){
   try{
-    const response=await fetch("./data/rules.json",{cache:"no-cache"});
-    if(!response.ok) throw new Error("Could not load rules");
-    const data=await response.json();
-    renderRules(data.rules||[]);
-  }catch(error){
-    loading.textContent="Could not load the study content. Please refresh while online.";
-    console.error(error);
+    const response=await fetch("./data/sections.json",{cache:"no-cache"});
+    if(!response.ok) throw new Error("Could not load sections");
+    dataset=await response.json();
+    loading.hidden=true;
+    populateSections();
+  }catch(err){
+    console.error(err);
+    loading.textContent="The full Highway Code content is still being built. Refresh in a few minutes.";
   }
 }
 
-const saved=localStorage.getItem("languageMode");
-if(saved) selector.value=saved;
-selector.addEventListener("change",applyLanguage);
-search.addEventListener("input",applySearch);
-loadRules();
+const savedMode=localStorage.getItem("languageMode");
+if(savedMode) languageMode.value=savedMode;
+
+sectionSelect.addEventListener("change",()=>{activeIndex=Number(sectionSelect.value);search.value="";renderSection()});
+languageMode.addEventListener("change",renderSection);
+search.addEventListener("input",renderSection);
+prevSection.addEventListener("click",()=>{if(activeIndex>0){activeIndex--;search.value="";renderSection()}});
+nextSection.addEventListener("click",()=>{if(activeIndex<dataset.sections.length-1){activeIndex++;search.value="";renderSection()}});
+
+loadData();
 
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js"));
