@@ -1,0 +1,27 @@
+{
+  "source": "GOV.UK Highway Code",
+  "source_url": "https://www.gov.uk/guidance/the-highway-code",
+  "rules": [
+    {
+      "rule": "Rule 126",
+      "title": "Stopping distances",
+      "english": "Drive at a speed that will allow you to stop well within the distance you can see to be clear.",
+      "ukrainian": "Рухайтеся з такою швидкістю, щоб мати можливість зупинитися в межах вільної ділянки дороги, яку ви добре бачите.",
+      "keywords": ["stopping distance", "speed", "гальмівний шлях", "швидкість"]
+    },
+    {
+      "rule": "Rule 159",
+      "title": "Before moving off",
+      "english": "Before moving off, use your mirrors and check the blind spot to make sure it is safe to move.",
+      "ukrainian": "Перед початком руху скористайтеся дзеркалами та перевірте сліпу зону, щоб переконатися, що рушати безпечно.",
+      "keywords": ["mirrors", "blind spot", "moving off", "дзеркала", "сліпа зона"]
+    },
+    {
+      "rule": "Rule 170",
+      "title": "Junctions",
+      "english": "Take extra care at junctions. Watch carefully for pedestrians, cyclists and motorcyclists.",
+      "ukrainian": "Будьте особливо уважні на перехрестях. Уважно стежте за пішоходами, велосипедистами та мотоциклістами.",
+      "keywords": ["junction", "pedestrians", "cyclists", "motorcyclists", "перехрестя", "пішоходи", "велосипедисти"]
+    }
+  ]
+}
