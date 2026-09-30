@@ -21,42 +21,54 @@
   </header>
 
   <main class="container">
-    <section class="toolbar" aria-label="Study controls">
-      <label class="wide">
-        <span>Section / Розділ</span>
-        <select id="sectionSelect"></select>
-      </label>
+    <section id="homeView" class="home-view">
+      <div class="home-heading">
+        <h2>Choose a section</h2>
+        <p>Оберіть розділ</p>
+      </div>
 
-      <label>
-        <span>Language / Мова</span>
-        <select id="languageMode">
-          <option value="both">English + Українська</option>
-          <option value="english">English only</option>
-          <option value="ukrainian">Українська</option>
-        </select>
-      </label>
-
-      <label>
-        <span>Search this section / Пошук</span>
-        <input id="search" type="search" placeholder="e.g. roundabout / кільце" autocomplete="off">
-      </label>
+      <div id="sectionGrid" class="section-grid" aria-live="polite"></div>
+      <p id="homeLoading" class="status">Loading sections… / Завантаження розділів…</p>
     </section>
 
-    <nav id="sectionNav" class="section-nav" aria-label="Section navigation">
-      <button id="prevSection" type="button">← Previous</button>
-      <button id="nextSection" type="button">Next →</button>
-    </nav>
+    <section id="readerView" class="reader-view" hidden>
+      <div class="reader-shell">
+        <button id="backToSections" class="back-button" type="button">← Sections / Розділи</button>
 
-    <section id="sectionHeader" class="section-header" hidden>
-      <p id="sectionCount" class="section-count"></p>
-      <h2 id="sectionTitle"></h2>
-      <p id="sectionDescription"></p>
-      <a id="officialLink" target="_blank" rel="noopener">Open official GOV.UK page ↗</a>
+        <section class="toolbar" aria-label="Study controls">
+          <label>
+            <span>Language / Мова</span>
+            <select id="languageMode">
+              <option value="both">English + Українська</option>
+              <option value="english">English only</option>
+              <option value="ukrainian">Українська</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Search this section / Пошук</span>
+            <input id="search" type="search" placeholder="e.g. roundabout / кільце" autocomplete="off">
+          </label>
+        </section>
+
+        <nav class="section-nav" aria-label="Section navigation">
+          <button id="prevSection" type="button">← Previous</button>
+          <button id="nextSection" type="button">Next →</button>
+        </nav>
+
+        <section id="sectionHeader" class="section-header" hidden>
+          <p id="sectionCount" class="section-count"></p>
+          <h2 id="sectionTitle"></h2>
+          <p id="sectionTitleUk" class="section-title-uk"></p>
+          <p id="sectionDescription"></p>
+          <a id="officialLink" target="_blank" rel="noopener">Open official GOV.UK page ↗</a>
+        </section>
+
+        <div id="content" class="content" aria-live="polite"></div>
+        <p id="loading" class="status">Loading Highway Code… / Завантаження…</p>
+        <p id="noResults" class="status" hidden>No matching content / Нічого не знайдено</p>
+      </div>
     </section>
-
-    <div id="content" class="content" aria-live="polite"></div>
-    <p id="loading" class="status">Loading Highway Code… / Завантаження…</p>
-    <p id="noResults" class="status" hidden>No matching content / Нічого не знайдено</p>
 
     <footer class="footer">
       <p>Source: The Highway Code on GOV.UK. Reused under the Open Government Licence v3.0. Ukrainian translations are provided only as a personal study aid.</p>
