@@ -22,6 +22,11 @@
 
   <main class="container">
     <section class="toolbar" aria-label="Study controls">
+      <label class="wide">
+        <span>Section / Розділ</span>
+        <select id="sectionSelect"></select>
+      </label>
+
       <label>
         <span>Language / Мова</span>
         <select id="languageMode">
@@ -32,21 +37,33 @@
       </label>
 
       <label>
-        <span>Search / Пошук</span>
-        <input id="search" type="search" placeholder="Search rules…" autocomplete="off">
+        <span>Search this section / Пошук</span>
+        <input id="search" type="search" placeholder="e.g. roundabout / кільце" autocomplete="off">
       </label>
     </section>
 
     <section class="notice">
-      <strong>Study version:</strong> English is shown first so the wording used in the UK remains familiar. Ukrainian appears directly underneath.
+      <strong>Study aid:</strong> the English text comes from the official GOV.UK Highway Code. The Ukrainian text is a machine-generated study translation and may not reproduce legal wording exactly. For the test and legal meaning, use the English source.
     </section>
 
-    <div id="rules" class="rules" aria-live="polite"></div>
-    <p id="loading" class="no-results">Loading rules… / Завантаження…</p>
-    <p id="noResults" class="no-results" hidden>No matching rules / Нічого не знайдено</p>
+    <nav id="sectionNav" class="section-nav" aria-label="Section navigation">
+      <button id="prevSection" type="button">← Previous</button>
+      <button id="nextSection" type="button">Next →</button>
+    </nav>
+
+    <section id="sectionHeader" class="section-header" hidden>
+      <p id="sectionCount" class="section-count"></p>
+      <h2 id="sectionTitle"></h2>
+      <p id="sectionDescription"></p>
+      <a id="officialLink" target="_blank" rel="noopener">Open official GOV.UK page ↗</a>
+    </section>
+
+    <div id="content" class="content" aria-live="polite"></div>
+    <p id="loading" class="status">Loading Highway Code… / Завантаження…</p>
+    <p id="noResults" class="status" hidden>No matching content / Нічого не знайдено</p>
 
     <footer class="footer">
-      <p>Highway Code source content: GOV.UK. Reused under the Open Government Licence v3.0. Ukrainian translations are provided as a personal study aid; the official English text remains the authoritative source.</p>
+      <p>Source: The Highway Code on GOV.UK. Reused under the Open Government Licence v3.0. Ukrainian translations are provided only as a personal study aid.</p>
     </footer>
   </main>
 
