@@ -1,0 +1,44 @@
+name: Build bilingual Highway Code
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tools/build_all_sections.py"
+      - ".github/workflows/build-highway-code.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install importer and translation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 argostranslate
+
+      - name: Fetch all Highway Code sections and build Ukrainian translation
+        run: python tools/build_all_sections.py
+
+      - name: Commit generated content
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/sections.json
+          if git diff --cached --quiet; then
+            echo "No content changes to commit."
+          else
+            git commit -m "Build full bilingual Highway Code content"
+            git push
+          fi
